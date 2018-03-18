@@ -2,30 +2,30 @@ import psycopg2
 from time import strftime
 dbname = "news"
 query1 = ('''select articles.title, count(*) as num from articles JOIN log ON
-		 log.path like concat('/article/%',articles.slug)
-		 group by articles.title order by num desc limit 3;''')
-query2 = ('''select authors.name, count(*) as num from authors join articles
-		 on authors.id = articles.author
-		 JOIN log ON log.path LIKE concat('/article/%',articles.slug)
-		 GROUP BY authors.name order by num desc;''')
+	log.path like concat('/article/%',articles.slug)
+	group by articles.title order by num desc limit 3;''')
+query2 = ('''select authors.name, count(*) as num from authors join articles 
+	on authors.id = articles.author
+	JOIN log ON log.path LIKE concat('/article/%',articles.slug)
+	GROUP BY authors.name order by num desc;''')
 query3 = ('''select t.day, round(((e.errors::decimal)/ t.total), 3)*100 AS
-		 percent from (select date_trunc('day', time) "day", count(*) AS
-		 errors from log where status LIKE '404%' GROUP BY day) AS e join
-		 (select date_trunc('day', time) "day", count(*) AS total from log
-		 GROUP BY day) AS t ON t.day = e.day where 
-		 (round(((e.errors::decimal) / t.total), 3)*100 > 1)
-		 ORDER BY percent desc;''')
+	percent from (select date_trunc('day', time) "day", count(*) AS
+	errors from log where status LIKE '404%' GROUP BY day) AS e join
+	(select date_trunc('day', time) "day", count(*) AS total from log
+	GROUP BY day) AS t ON t.day = e.day where
+	(round(((e.errors::decimal) / t.total), 3)*100 > 1)
+	ORDER BY percent desc;''')
 
 print('Log Analysis Project')
 
 
 def run(query):
-    conn = psycopg2.connect("dbname="+dbname)
-    cur = conn.cursor()
-    cur.execute(query)
-    rows = cur.fetchall()
-    conn.close
-    return rows
+	conn = psycopg2.connect("dbname="+dbname)
+	cur = conn.cursor()
+	cur.execute(query)
+	rows = cur.fetchall()
+	conn.close
+	return rows
 
 
 def popular_articles(q):
