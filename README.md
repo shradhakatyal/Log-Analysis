@@ -1,0 +1,2 @@
+# Log Analysis Project
+An internal reporting tool that helps draw conclusions about a database of news articles. This tool helps answer three questions regarding the news database and uses psycopg2 module for python.
